@@ -2,6 +2,7 @@ package fatec.json.handler;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -38,7 +39,7 @@ public class QSon {
 		return jsonMap;
 	}
 
-	public JsonElement merge(QSonElement... elements) {
+	public JsonElement merge(Collection<QSonElement> elements) {
 		JsonElement[] verifiedJsons = prepareElements(elements);
 		JsonElement[] jsons = elementsToJsonArray(verifiedJsons);
 		
@@ -95,17 +96,19 @@ public class QSon {
 		return jsonChildsMap;
 	}
 
-	private JsonElement[] prepareElements(QSonElement[] elements) {
-		JsonElement[] result = new JsonElement[elements.length];
+	private JsonElement[] prepareElements(Collection<QSonElement> elements) {
+		JsonElement[] result = new JsonElement[elements.size()];
 
-		for (int i = 0; i < elements.length; i++) {
-			JsonElement json = elements[i].getJson();
+		int i = 0;
+		for (QSonElement element : elements) {
+			JsonElement json = element.getJson();
 
 			if (json.isJsonArray()) {
-				elements[i].setJson(jsonToAttribute(elements[i].getKey(), json));
+				element.setJson(jsonToAttribute(element.getKey(), json));
 			}
 
-			result[i] = elements[i].getJson();
+			result[i] = element.getJson();
+			i++;
 		}
 
 		return result;
